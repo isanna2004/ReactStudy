@@ -6,7 +6,7 @@ class Wrapper extends React.Component {
   constructor() {
     super();
     this.state = {
-      seconds: 10,
+      seconds: 70,
       timer: false,
     };
     this.StartTime = this.StartTime.bind(this);
@@ -15,7 +15,7 @@ class Wrapper extends React.Component {
   StartTime() {
     let minutes = Math.floor(this.state.seconds / 60);
     let remSeconds = this.state.seconds % 60;
-    if (remSeconds === -1 && minutes >= 0) {
+    if (remSeconds < 0 && minutes >= 0) {
       minutes = minutes - 1;
       remSeconds = 59;
     }
@@ -25,7 +25,7 @@ if(minutes < 0) {
     this.setState((prevState, props) => {
       return {
         minutes: minutes,
-        remSeconds: remSeconds,git
+        remSeconds: remSeconds,
         seconds: prevState.seconds - 1,
       };
     });
