@@ -2,118 +2,132 @@ import React from "react";
 import ReactDOM from "react-dom";
 import * as serviceWorker from "./serviceWorker";
 import "../src/index.css";
-
+/**
+ * статус таймера
+ */
+const TIMER_STATS = {
+  pomodoro: "pomodoro",
+  break: "break",
+};
 class Wrapper extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      timer: null,
-      value: "",
-    };
+  /**
+   * State
+   */
+  state = {
+    pomodor: 2, //длина таймера
+    round: 0, // количество помидоров
+    break: {
+      short: 1, // короткий перерыв
+      long: 3, // длинный перерыв
+    },
+    cicle: 4, // количество циклов, через которые будет длинный перерыв
 
-    this.startTime = this.startTime.bind(this);
-    this.Timer = this.Timer.bind(this);
-    this.pauseTimer = this.pauseTimer.bind(this);
-    this.stopTimer = this.stopTimer.bind(this);
-    this.playAudio = this.playAudio.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  handleChange(event) {
-    this.setState({ value: event.target.value });
-  }
-
-  handleSubmit(event) {
-    let sec = this.state.value;
-    this.setState({ sec: sec });
-    event.preventDefault();
-  }
-
-  startTime() {
-    let value = this.state.value;
-    let minutes = Math.floor(value / 60);
-    let remSeconds = value % 60;
-    if (remSeconds < 0 && minutes >= 0) {
-      minutes = minutes - 1;
-      remSeconds = 59;
-    }
-    if (minutes < 0) {
-      this.playAudio();
-      clearInterval(this.state.timer);
-      value = this.state.sec;
-      this.setState({ value: parseInt(value / 3) });
-      return this.Timer();
-    }
-    this.setState((prevState, props) => {
-      return {
-        minutes: minutes,
-        remSeconds: remSeconds,
-        value: prevState.value - 1,
-      };
+    status: TIMER_STATS.pomodoro,
+    timerId: null, //id таймера setInterval
+    timerValue: 0, //текущее значение таймера (сек)
+    pause: false,
+  };
+  /**methods */
+  //Запускает таймер
+  play = () => {
+    const { round } = this.state;
+    window.clearInterval(this.state.timerId);
+    this.setState((state) => ({
+      timerId: window.setInterval(this.tick, 100),
+      timerValue:
+        !state.round && !state.timerValue
+          ? state.pomodor * 60
+          : state.timerValue,
+      pause: false,
+    }));
+  };
+  //ставит таймер на паузу
+  pause = () => {
+    window.clearInterval(this.state.timerId);
+    this.setState({
+      pause: true,
     });
-  }
-
-  playAudio() {
-    const audioEl = document.getElementsByClassName("audio-element")[0];
-    audioEl.play();
-  }
-  Timer() {
-    clearInterval(this.state.timer);
-    let timer = setInterval(this.startTime, 1000);
-    this.setState({ timer: timer });
-    return timer
-  }
-  restTimer() {
-    let value = this.state.sec;
-    this.setState({ value: value });
-    return this.Timer();
-  }
-
-  pauseTimer() {
-    clearInterval(this.state.timer);
-  }
-  stopTimer() {
-    clearInterval(this.state.timer);
-    let sec = this.state.sec;
-    let minutes = Math.floor(sec / 60);
-    let remSeconds = sec % 60;
-    this.setState({ value: sec, minutes: minutes, remSeconds: remSeconds });
-  }
-
+  };
+  //останавливает таймер
+  stop = () => {
+    window.clearInterval(this.state.timerId);
+    this.setState({
+      timerId:null,
+      timerValue: 0,
+      status: TIMER_STATS.pomodoro,
+    });
+  };
+  //меняет значение и статус таймера
+  tick = () => {
+    const { timerValue, status } = this.state;
+    //если таймер подошёл к концу
+    if (timerValue <= 0) {
+      //проверяю текущий статус
+      switch (status) {
+        case TIMER_STATS.pomodoro:
+          // если помидор кратен 4 сделать большой перерыв,если нет-маленький
+          this.setState((state) => ({
+            status: TIMER_STATS.break,
+            round: state.round + 1,
+            timerValue:
+              state.round && state.round % state.cicle === 0
+                ? state.break.long * 60
+                : state.break.short * 60,
+          }));
+          break;
+        case TIMER_STATS.break:
+          this.setState((state) => ({
+            status: TIMER_STATS.pomodoro,
+            timerValue: state.pomodor * 60,
+          }));
+          break;
+        default:
+          console.log("неизвестный статус");
+          break;
+      }
+    } else {
+      // если таймер  ещё не закончился
+      // уменьшаю таймер на 1 сек
+      this.setState((state) => ({
+        timerValue: state.timerValue - 1,
+      }));
+    }
+  };
   render() {
+    const { timerValue, round, pause, timerId } = this.state;
+    const min = Math.floor(timerValue / 60);
+    const sec = timerValue % 60;
     return (
       <div className="my-5 text-center">
         <h1 className="title">Pomodoro Timer</h1>
         <h2>
-          {" "}
-          <span className="text-danger">Время работы</span> <br />
-          Осталось {this.state.minutes} минут {this.state.remSeconds} секунд
+          {/* Значения таймера */}
+          {min < 10 && "0"}
+          {min} : {sec < 10 && "0"}
+          {sec}
         </h2>
-        <audio className="audio-element" preload="auto">
-          <source src="https://assets.coderrocketfuel.com/pomodoro-times-up.mp3"></source>
-        </audio>
+        {/* Timer Controls */}
         <div className="button-group">
-          <button className="btn-lg mr-5" onClick={this.Timer}>
-            Start
-          </button>
-          <button className="btn-lg mr-5" onClick={this.pauseTimer}>
-            Pause
-          </button>
-          <button className="btn-lg" onClick={this.stopTimer}>
-            Stop
-          </button>
+          {/* Start timer*/}
+          {(pause || timerId === null) && (
+            <button className="btn-lg mr-5" onClick={this.play}>
+              Play
+            </button>
+          )}
+
+          {!pause && timerId !== null && (
+            < >
+              {/* Pause timer*/}
+              <button className="btn-lg mr-5" onClick={this.pause}>
+                Pause
+              </button>
+              {/* Stop timer*/}
+              <button className="btn-lg" onClick={this.stop}>
+                Stop
+              </button>
+            </>
+          )}
         </div>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Set your Time:
-            <input
-              type="number"
-              className="worktime mx-4"
-              onChange={this.handleChange}
-            />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
       </div>
     );
   }
