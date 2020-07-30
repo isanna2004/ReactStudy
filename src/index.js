@@ -27,7 +27,7 @@ class Wrapper extends React.Component {
       long: 3, // длинный перерыв
     },
     cicle: 4, // количество циклов, через которые будет длинный перерыв
-    color: "rgba(211,47,47 ,0.8)", //цвет фона изначальный
+    color: COLORS.work, //цвет фона изначальный
     dashOffset: 364.24, // значение длины окружности, вычисляемое по формуле P=2πR, R-радиус окружности
     status: TIMER_STATS.pomodoro,
     timerId: null, //id таймера setInterval
