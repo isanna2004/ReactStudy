@@ -27,8 +27,8 @@ class Wrapper extends React.Component {
       long: 3, // длинный перерыв
     },
     cicle: 4, // количество циклов, через которые будет длинный перерыв
-    color: "rgba(211,47,47 ,0.8)",
-    dashOffset: 364.24,
+    color: "rgba(211,47,47 ,0.8)", //цвет фона изначальный
+    dashOffset: 364.24, // значение длины окружности, вычисляемое по формуле P=2πR, R-радиус окружности
     status: TIMER_STATS.pomodoro,
     timerId: null, //id таймера setInterval
     timerValue: 0, //текущее значение таймера (сек)
@@ -100,6 +100,7 @@ class Wrapper extends React.Component {
     } else {
       // если таймер  ещё не закончился
       // уменьшаю таймер на 1 сек
+      //уменьшаю значение длины окружности на равный промежуток
       this.setState((state) => ({
         dashOffset: state.dashOffset - dashOffset / timerValue,
         timerValue: state.timerValue - 1,
@@ -130,7 +131,7 @@ class Wrapper extends React.Component {
             strokeWidth="4"
             strokeDashoffset="364.24 364.24"
           />
-          {/* Создаем круг, который будем анимировать*/}
+          {/* Создаем круг,длину окружности которого будем уменьшать,создавая эффект анимации*/}
           <circle
             id="circle"
             cx="60"
@@ -163,7 +164,6 @@ class Wrapper extends React.Component {
               Play
             </button>
           )}
-
           {!pause && timerId !== null && (
             <>
               {/* Pause timer*/}
