@@ -25,4 +25,9 @@ border:1px solid rgba(255,255,255,0.5);
 }
 .btn-lg:active{
    border-radius: 50px;
+   box-shadow: unset;
+}
+.wrap{
+  height: 100vh;
+  padding: 30vh;
 }

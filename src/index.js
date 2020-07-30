@@ -12,9 +12,8 @@ const TIMER_STATS = {
 };
 const COLORS = {
   work:
-    "linear-gradient(to right,rgba(216,27,96 ,1) 0%,rgba(255,183,77 ,0.8) 100%)",
-  rest:
-    "linear-gradient(to bottom,rgba(79,195,247 ,1) 0%,rgba(21,101,192 ,1) 100%)",
+    "linear-gradient(90deg, #F78CA0 0%, #F9748F 20.31%, #FD868C 66.67%, #FE9A8B 100%)",
+  rest: "linear-gradient(gi180deg, #48C6EF 0%, #6F86D6 100%)",
 };
 class Wrapper extends React.Component {
   /**
@@ -105,7 +104,6 @@ class Wrapper extends React.Component {
         dashOffset: state.dashOffset - dashOffset / timerValue,
         timerValue: state.timerValue - 1,
       }));
-      console.log(this.state.dashOffset);
     }
   };
   render() {
@@ -113,7 +111,7 @@ class Wrapper extends React.Component {
     const min = Math.floor(timerValue / 60);
     const sec = timerValue % 60;
     return (
-      <div style={{ background: color }} className="py-5 text-center">
+      <div style={{ background: color }} className="wrap text-center">
         {/* Добавляем svg */}
         <svg
           id="svg"
