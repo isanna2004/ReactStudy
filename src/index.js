@@ -13,7 +13,7 @@ const TIMER_STATS = {
 const COLORS = {
   work:
     "linear-gradient(90deg, #F78CA0 0%, #F9748F 20.31%, #FD868C 66.67%, #FE9A8B 100%)",
-  rest: "linear-gradient(gi180deg, #48C6EF 0%, #6F86D6 100%)",
+  rest: "linear-gradient(180deg, #48C6EF 0%, #6F86D6 100%)",
 };
 class Wrapper extends React.Component {
   /**
@@ -27,7 +27,8 @@ class Wrapper extends React.Component {
       long: 3, // длинный перерыв
     },
     cicle: 4, // количество циклов, через которые будет длинный перерыв
-    color: COLORS.work, //цвет фона изначальный
+    color:
+      COLORS.work, //цвет фона изначальный
     dashOffset: 364.24, // значение длины окружности, вычисляемое по формуле P=2πR, R-радиус окружности
     status: TIMER_STATS.pomodoro,
     timerId: null, //id таймера setInterval
