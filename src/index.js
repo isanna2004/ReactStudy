@@ -29,7 +29,7 @@ class Wrapper extends React.Component {
     },
     cicle: 4, // количество циклов, через которые будет длинный перерыв
     color: "rgba(211,47,47 ,0.8)",
-    dashArray: 364,
+    dashOffset: 364.24,
     status: TIMER_STATS.pomodoro,
     timerId: null, //id таймера setInterval
     timerValue: 0, //текущее значение таймера (сек)
@@ -62,13 +62,13 @@ class Wrapper extends React.Component {
     this.setState({
       timerId: null,
       timerValue: 0,
-      dashArray: 364.24,
+      dashOffset: 364.24,
       status: TIMER_STATS.pomodoro,
     });
   };
   //меняет значение и статус таймера
   tick = () => {
-    const { timerValue, status, dashArray } = this.state;
+    const { timerValue, status, dashOffset, pomodor } = this.state;
     //если таймер подошёл к концу
     if (timerValue <= 0) {
       //проверяю текущий статус
@@ -78,7 +78,7 @@ class Wrapper extends React.Component {
           this.setState((state) => ({
             status: TIMER_STATS.break,
             color: COLORS.rest,
-            dashArray:  364,
+            dashOffset: 364.24,
             round: state.round + 1,
             timerValue:
               state.round && state.round % this.state.cicle === 0
@@ -89,9 +89,9 @@ class Wrapper extends React.Component {
         case TIMER_STATS.break:
           this.setState((state) => ({
             color: COLORS.work,
-            
+            dashOffset: 364.24,
             status: TIMER_STATS.pomodoro,
-            timerValue: state.pomodor * 60,
+            timerValue: pomodor * 60,
           }));
           break;
         default:
@@ -102,9 +102,10 @@ class Wrapper extends React.Component {
       // если таймер  ещё не закончился
       // уменьшаю таймер на 1 сек
       this.setState((state) => ({
+        dashOffset: state.dashOffset - dashOffset / timerValue,
         timerValue: state.timerValue - 1,
-        dashArray: dashArray -( dashArray / timerValue/2),
       }));
+      console.log(this.state.dashOffset);
     }
   };
   render() {
@@ -129,8 +130,7 @@ class Wrapper extends React.Component {
             fill="transparent"
             stroke="rgba(224,224,224 ,0.2)"
             strokeWidth="4"
-            strokeDashoffset="364.24"
-            strokeDasharray="0"
+            strokeDashoffset="364.24 364.24"
           />
           {/* Создаем круг, который будем анимировать*/}
           <circle
@@ -139,12 +139,12 @@ class Wrapper extends React.Component {
             cy="60"
             r="58"
             fill="transparent"
-            strokeDashoffset="364.24"
-            strokeDasharray={this.state.dashArray}
+            strokeDashoffset={this.state.dashOffset}
+            strokeDasharray="364.24"
             stroke="white"
             strokeWidth="4"
-            transform="rotate (-90 60 60)"
-            style={{ transition: "all 2s" }}
+            transform="rotate (270 60 60)"
+            style={{ transition: "all 1s" }}
           >
             {/* Анимация круга */}
           </circle>
