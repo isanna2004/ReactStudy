@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Modal from "../src/components/modal/modal";
 import * as serviceWorker from "./serviceWorker";
 import "../src/index.css";
+
 
 /**
  * статус таймера
@@ -15,36 +17,40 @@ const COLORS = {
     "linear-gradient(90deg, #F78CA0 0%, #F9748F 20.31%, #FD868C 66.67%, #FE9A8B 100%)",
   rest: "linear-gradient(180deg, #48C6EF 0%, #6F86D6 100%)",
 };
+let radius = 58;
 class Wrapper extends React.Component {
   /**
    * State
    */
   state = {
-    pomodor: 2, //длина таймера
+
+    pomodoro: 2, //длина таймера
     round: 0, // количество помидоров
     break: {
       short: 1, // короткий перерыв
       long: 3, // длинный перерыв
     },
     cicle: 4, // количество циклов, через которые будет длинный перерыв
-    color:
-      COLORS.work, //цвет фона изначальный
-    dashOffset: 364.24, // значение длины окружности, вычисляемое по формуле P=2πR, R-радиус окружности
+    color: COLORS.work, //цвет фона изначальный
+    dashOffset: 2 * 3.14 * radius, //вычисляем длину окружности, по формуле P=2πR,где R-радиус
     status: TIMER_STATS.pomodoro,
     timerId: null, //id таймера setInterval
     timerValue: 0, //текущее значение таймера (сек)
     pause: false,
+    isOpen: false,
   };
   /**methods */
+
   //Запускает таймер
   play = () => {
     window.clearInterval(this.state.timerId);
+    window.clearInterval(this.state.dashOffset);
     this.setState((state) => ({
       color: COLORS.work,
       timerId: window.setInterval(this.tick, 1000),
       timerValue:
         !state.round && !state.timerValue
-          ? state.pomodor * 60
+          ? state.pomodoro * 60
           : state.timerValue,
       pause: false,
     }));
@@ -58,17 +64,17 @@ class Wrapper extends React.Component {
   };
   //останавливает таймер
   stop = () => {
-    window.clearInterval(this.state.timerId);
+    window.clearInterval(this.state.timerId, this.state.dashOffset);
     this.setState({
       timerId: null,
       timerValue: 0,
-      dashOffset: 364.24,
+      dashOffset: 2 * 3.14 * radius,
       status: TIMER_STATS.pomodoro,
     });
   };
   //меняет значение и статус таймера
   tick = () => {
-    const { timerValue, status, dashOffset, pomodor } = this.state;
+    const { timerValue, status, dashOffset, pomodoro } = this.state;
     //если таймер подошёл к концу
     if (timerValue <= 0) {
       //проверяю текущий статус
@@ -78,7 +84,7 @@ class Wrapper extends React.Component {
           this.setState((state) => ({
             status: TIMER_STATS.break,
             color: COLORS.rest,
-            dashOffset: 364.24,
+            dashOffset: 2 * 3.14 * radius,
             round: state.round + 1,
             timerValue:
               state.round && state.round % this.state.cicle === 0
@@ -89,9 +95,9 @@ class Wrapper extends React.Component {
         case TIMER_STATS.break:
           this.setState((state) => ({
             color: COLORS.work,
-            dashOffset: 364.24,
             status: TIMER_STATS.pomodoro,
-            timerValue: pomodor * 60,
+            dashOffset: 2 * 3.14 * radius,
+            timerValue: pomodoro * 60,
           }));
           break;
         default:
@@ -108,12 +114,29 @@ class Wrapper extends React.Component {
       }));
     }
   };
+
+  //изменяем значения на пользовательские
+  handleChange = (event) => {
+    this.setState({
+      value: event.target.value,
+    });
+  };
+
   render() {
     const { timerValue, pause, timerId, color } = this.state;
     const min = Math.floor(timerValue / 60);
     const sec = timerValue % 60;
     return (
-      <div style={{ background: color }} className="wrap text-center">
+      <div
+        style={{
+          background: color,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        className="wrap text-center"
+      >
         {/* Добавляем svg */}
         <svg
           id="svg"
@@ -126,7 +149,7 @@ class Wrapper extends React.Component {
           <circle
             cx="60"
             cy="60"
-            r="58"
+            r={radius}
             fill="transparent"
             stroke="rgba(224,224,224 ,0.2)"
             strokeWidth="4"
@@ -137,7 +160,7 @@ class Wrapper extends React.Component {
             id="circle"
             cx="60"
             cy="60"
-            r="58"
+            r={radius}
             fill="transparent"
             strokeDashoffset={this.state.dashOffset}
             strokeDasharray="364.24"
@@ -156,9 +179,37 @@ class Wrapper extends React.Component {
             {sec}
           </text>
         </svg>
-
+        <div>
+          {/* Добавляем модальное окно */}
+          <Modal
+            isOpen={this.state.isOpen}
+            cicle={this.state.cicle}
+            pomodoro={this.state.pomodoro}
+            handleChange = {this.handleChange}
+            breakShort={this.state.break.short}
+            breakLong={this.state.break.long}
+            onClose={(e) => {
+              this.setState({
+                isOpen: false,
+              });
+              this.play();
+            }}
+          />
+          {/* Settings button */}
+          <button
+            className="settings"
+            onClick={(e) => {
+              this.setState({
+                isOpen: true,
+              });
+              this.pause();
+            }}
+          >
+            Show modal
+          </button>
+        </div>
         {/* Timer Controls */}
-        <div className="button-group">
+        <div className="button-group mt-5">
           {/* Start timer*/}
           {(pause || timerId === null) && (
             <button id="play" className="btn-lg" onClick={this.play}>

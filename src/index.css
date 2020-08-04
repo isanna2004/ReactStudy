@@ -5,9 +5,7 @@ body {
   font-size: 50px;
   color: red;
 }
-.button-group {
-  margin: 80px auto;
-}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
@@ -29,5 +27,10 @@ border:1px solid rgba(255,255,255,0.5);
 }
 .wrap{
   height: 100vh;
-  padding: 30vh;
+ 
+}
+.settings{
+  position: absolute;
+  top:10%;
+  right: 5%;
 }
