@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import Modal from "../src/components/modal/modal";
 import * as serviceWorker from "./serviceWorker";
 import "../src/index.css";
+import icon from  "../src/images/gear.png";
 
 
 /**
@@ -185,7 +186,7 @@ class Wrapper extends React.Component {
             isOpen={this.state.isOpen}
             cicle={this.state.cicle}
             pomodoro={this.state.pomodoro}
-            handleChange = {this.handleChange}
+            handleChange={this.handleChange}
             breakShort={this.state.break.short}
             breakLong={this.state.break.long}
             onClose={(e) => {
@@ -205,7 +206,7 @@ class Wrapper extends React.Component {
               this.pause();
             }}
           >
-            Show modal
+            <img src ={icon} className="icon" alt="settings button"/>
           </button>
         </div>
         {/* Timer Controls */}
