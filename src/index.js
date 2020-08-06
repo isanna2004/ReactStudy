@@ -13,10 +13,10 @@ const TIMER_STATS = {
   pomodoro: "pomodoro",
   break: "break",
 };
-const COLORS = {
-  work:
+const BACKGROUNDS = {
+  [TIMER_STATS.pomodoro]:
     "linear-gradient(90deg, #F78CA0 0%, #F9748F 20.31%, #FD868C 66.67%, #FE9A8B 100%)",
-  rest: "linear-gradient(180deg, #48C6EF 0%, #6F86D6 100%)",
+  [TIMER_STATS.break]: "linear-gradient(180deg, #48C6EF 0%, #6F86D6 100%)",
 };
 let radius = 58;
 class Wrapper extends React.Component {
@@ -32,7 +32,6 @@ class Wrapper extends React.Component {
       long: 3, // длинный перерыв
     },
     cicle: 4, // количество циклов, через которые будет длинный перерыв
-    color: COLORS.work, //цвет фона изначальный
     dashOffset: 2 * 3.14 * radius, //вычисляем длину окружности, по формуле P=2πR,где R-радиус
     status: TIMER_STATS.pomodoro,
     timerId: null, //id таймера setInterval
@@ -47,7 +46,6 @@ class Wrapper extends React.Component {
     window.clearInterval(this.state.timerId);
     window.clearInterval(this.state.dashOffset);
     this.setState((state) => ({
-      color: COLORS.work,
       timerId: window.setInterval(this.tick, 1000),
       timerValue:
         !state.round && !state.timerValue
@@ -84,7 +82,6 @@ class Wrapper extends React.Component {
           // если помидор кратен 4 сделать большой перерыв,если нет-маленький
           this.setState((state) => ({
             status: TIMER_STATS.break,
-            color: COLORS.rest,
             dashOffset: 2 * 3.14 * radius,
             round: state.round + 1,
             timerValue:
@@ -95,7 +92,7 @@ class Wrapper extends React.Component {
           break;
         case TIMER_STATS.break:
           this.setState((state) => ({
-            color: COLORS.work,
+           
             status: TIMER_STATS.pomodoro,
             dashOffset: 2 * 3.14 * radius,
             timerValue: pomodoro * 60,
@@ -124,13 +121,13 @@ class Wrapper extends React.Component {
   };
 
   render() {
-    const { timerValue, pause, timerId, color } = this.state;
+    const { timerValue, pause, timerId,status } = this.state;
     const min = Math.floor(timerValue / 60);
     const sec = timerValue % 60;
     return (
       <div
         style={{
-          background: color,
+          background:BACKGROUNDS[status],
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
