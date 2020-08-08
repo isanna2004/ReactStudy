@@ -2,39 +2,44 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./modal.css";
 
-  
 class Modal extends React.Component {
 
+  
   render() {
     let modal = (
       <div className="modal-window pb-5 ">
-        <form className="modal-wrapper" onSubmit={this.handleSubmit}>
+        <form className="modal-wrapper" onSubmit={this.props.handleSubmit}>
           <label className="modal-text">Pomodoro:</label>
           <input
+            name="pomodoro"
             type="number"
             className="modal-input text-white pl-2"
             value={this.props.pomodoro}
+            onChange={this.props.handleChange}
           />
           <label className="modal-text">Short Break: </label>
           <input
+            name="breakShort"
             type="number"
             className="modal-input text-white pl-2"
             value={this.props.breakShort}
-            onChange={this.handleChange}
+            onChange={this.props.handleChange}
           />
           <label className="modal-text">Long Break: </label>
           <input
+            name="breakLong"
             type="number"
             className="modal-input text-white pl-2"
             value={this.props.breakLong}
-            onChange={this.handleChange}
+            onChange={this.props.handleChange}
           />
           <label className="modal-text">Number of Pomodor between break </label>
           <input
+            name="cicle"
             type="number"
             className="modal-input text-white pl-2"
             value={this.props.cicle}
-            onChange={this.handleChange}
+            onChange={this.props.handleChange}
           />
           <div className="button-group mt-2 text-right">
             <button className="btn-lg mr-2" onClick={this.props.onClose}>
@@ -44,7 +49,9 @@ class Modal extends React.Component {
               Save
             </button>
           </div>
-          <p className="modal-text mt-4">made with <span style={{color:"red"}}>♥</span> by Isanna </p>
+          <p className="modal-text mt-4">
+            made with <span style={{ color: "red" }}>♥</span> by Isanna{" "}
+          </p>
         </form>
       </div>
     );

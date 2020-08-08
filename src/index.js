@@ -3,8 +3,7 @@ import ReactDOM from "react-dom";
 import Modal from "../src/components/modal/modal";
 import * as serviceWorker from "./serviceWorker";
 import "../src/index.css";
-import icon from  "../src/images/gear.png";
-
+import icon from "../src/images/gear.png";
 
 /**
  * статус таймера
@@ -13,18 +12,19 @@ const TIMER_STATS = {
   pomodoro: "pomodoro",
   break: "break",
 };
+/**изменение цвета фона */
 const BACKGROUNDS = {
   [TIMER_STATS.pomodoro]:
     "linear-gradient(90deg, #F78CA0 0%, #F9748F 20.31%, #FD868C 66.67%, #FE9A8B 100%)",
   [TIMER_STATS.break]: "linear-gradient(180deg, #48C6EF 0%, #6F86D6 100%)",
 };
 let radius = 58;
+
 class Wrapper extends React.Component {
   /**
    * State
    */
   state = {
-
     pomodoro: 2, //длина таймера
     round: 0, // количество помидоров
     break: {
@@ -40,7 +40,21 @@ class Wrapper extends React.Component {
     isOpen: false,
   };
   /**methods */
-
+  //изменяем значения на пользовательские
+  handleChange = (event) => {
+    const name = event.target.name;
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+  //подтверждаем изменение данных формы
+  handleSubmit = (event) => {
+     this.setState({
+      isOpen: false,
+    });
+    event.preventDefault();
+    console.log(this.state.cicle)
+  };
   //Запускает таймер
   play = () => {
     window.clearInterval(this.state.timerId);
@@ -92,7 +106,6 @@ class Wrapper extends React.Component {
           break;
         case TIMER_STATS.break:
           this.setState((state) => ({
-           
             status: TIMER_STATS.pomodoro,
             dashOffset: 2 * 3.14 * radius,
             timerValue: pomodoro * 60,
@@ -113,21 +126,14 @@ class Wrapper extends React.Component {
     }
   };
 
-  //изменяем значения на пользовательские
-  handleChange = (event) => {
-    this.setState({
-      value: event.target.value,
-    });
-  };
-
   render() {
-    const { timerValue, pause, timerId,status } = this.state;
+    const { timerValue, pause, timerId, status } = this.state;
     const min = Math.floor(timerValue / 60);
     const sec = timerValue % 60;
     return (
       <div
         style={{
-          background:BACKGROUNDS[status],
+          background: BACKGROUNDS[status],
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -184,8 +190,10 @@ class Wrapper extends React.Component {
             cicle={this.state.cicle}
             pomodoro={this.state.pomodoro}
             handleChange={this.handleChange}
+            handleSubmit={this.handleSubmit}
             breakShort={this.state.break.short}
             breakLong={this.state.break.long}
+            value={this.state.value}
             onClose={(e) => {
               this.setState({
                 isOpen: false,
@@ -203,7 +211,7 @@ class Wrapper extends React.Component {
               this.pause();
             }}
           >
-            <img src ={icon} className="icon" alt="settings button"/>
+            <img src={icon} className="icon" alt="settings button" />
           </button>
         </div>
         {/* Timer Controls */}
