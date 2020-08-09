@@ -6,6 +6,7 @@ class Modal extends React.Component {
 
   
   render() {
+      const{defaultValues}= this.props;
     let modal = (
       <div className="modal-window pb-5 ">
         <form className="modal-wrapper" onSubmit={this.props.handleSubmit}>
@@ -14,7 +15,7 @@ class Modal extends React.Component {
             name="pomodoro"
             type="number"
             className="modal-input text-white pl-2"
-            value={this.props.pomodoro}
+            value={defaultValues.pomodoro}
             onChange={this.props.handleChange}
           />
           <label className="modal-text">Short Break: </label>
@@ -22,7 +23,7 @@ class Modal extends React.Component {
             name="breakShort"
             type="number"
             className="modal-input text-white pl-2"
-            value={this.props.breakShort}
+            value={defaultValues.breakShort}
             onChange={this.props.handleChange}
           />
           <label className="modal-text">Long Break: </label>
@@ -30,7 +31,7 @@ class Modal extends React.Component {
             name="breakLong"
             type="number"
             className="modal-input text-white pl-2"
-            value={this.props.breakLong}
+            value={defaultValues.breakLong}
             onChange={this.props.handleChange}
           />
           <label className="modal-text">Number of Pomodor between break </label>
@@ -38,7 +39,7 @@ class Modal extends React.Component {
             name="cicle"
             type="number"
             className="modal-input text-white pl-2"
-            value={this.props.cicle}
+            value={defaultValues.cicle}
             onChange={this.props.handleChange}
           />
           <div className="button-group mt-2 text-right">

@@ -27,10 +27,8 @@ class Wrapper extends React.Component {
   state = {
     pomodoro: 2, //длина таймера
     round: 0, // количество помидоров
-    break: {
-      short: 1, // короткий перерыв
-      long: 3, // длинный перерыв
-    },
+    breakShort: 1, // короткий перерыв
+    breakLong: 3, // длинный перерыв
     cicle: 4, // количество циклов, через которые будет длинный перерыв
     dashOffset: 2 * 3.14 * radius, //вычисляем длину окружности, по формуле P=2πR,где R-радиус
     status: TIMER_STATS.pomodoro,
@@ -49,11 +47,12 @@ class Wrapper extends React.Component {
   };
   //подтверждаем изменение данных формы
   handleSubmit = (event) => {
-     this.setState({
+    const name = this.state.name;
+    this.setState({
+      [name]: event.target.value,
       isOpen: false,
     });
     event.preventDefault();
-    console.log(this.state.cicle)
   };
   //Запускает таймер
   play = () => {
@@ -100,8 +99,8 @@ class Wrapper extends React.Component {
             round: state.round + 1,
             timerValue:
               state.round && state.round % this.state.cicle === 0
-                ? state.break.long * 60
-                : state.break.short * 60,
+                ? state.breakLong * 60
+                : state.breakShort * 60,
           }));
           break;
         case TIMER_STATS.break:
@@ -127,7 +126,7 @@ class Wrapper extends React.Component {
   };
 
   render() {
-    const { timerValue, pause, timerId, status } = this.state;
+    const { timerValue, pause, timerId, status,pomodoro,cicle,breakLong,breakShort,value } = this.state;
     const min = Math.floor(timerValue / 60);
     const sec = timerValue % 60;
     return (
@@ -187,13 +186,15 @@ class Wrapper extends React.Component {
           {/* Добавляем модальное окно */}
           <Modal
             isOpen={this.state.isOpen}
-            cicle={this.state.cicle}
-            pomodoro={this.state.pomodoro}
+            defaultValues={{
+              cicle,
+              pomodoro,
+              breakShort,
+              breakLong,
+              value,
+            }}
             handleChange={this.handleChange}
             handleSubmit={this.handleSubmit}
-            breakShort={this.state.break.short}
-            breakLong={this.state.break.long}
-            value={this.state.value}
             onClose={(e) => {
               this.setState({
                 isOpen: false,
